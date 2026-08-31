@@ -1,0 +1,62 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Este dispositivo profi-air ya está configurado."
+    },
+    "error": {
+      "cannot_connect": "No se ha podido conectar con el dispositivo profi-air.",
+      "invalid_device": "El host responde, pero no es un dispositivo profi-air 140 lite compatible (deviceType 002)."
+    },
+    "step": {
+      "user": {
+        "data": {
+          "host": "Host"
+        },
+        "data_description": {
+          "host": "Dirección IP local o nombre de host del controlador profi-air."
+        },
+        "description": "Conecta directamente con la API HTTP local del controlador FRÄNKISCHE profi-air 140 lite.",
+        "title": "Conectar con profi-air 140 lite"
+      }
+    }
+  },
+  "entity": {
+    "select": {
+      "function": {
+        "name": "Modo de ventilación",
+        "state": {
+          "auto": "Automático",
+          "maximum": "Máximo",
+          "minimum": "Mínimo",
+          "night": "Noche"
+        }
+      },
+      "season": {
+        "name": "Estación",
+        "state": {
+          "summer": "Verano",
+          "winter": "Invierno"
+        }
+      }
+    },
+    "sensor": {
+      "air_quality": {
+        "name": "Calidad del aire"
+      },
+      "humidity": {
+        "name": "Humedad"
+      },
+      "temperature": {
+        "name": "Temperatura"
+      }
+    },
+    "switch": {
+      "calendar": {
+        "name": "Programación semanal"
+      },
+      "power": {
+        "name": "Encendido"
+      }
+    }
+  }
+}
