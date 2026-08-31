@@ -115,3 +115,18 @@ Before requesting inclusion in the default HACS catalog:
 ## License
 
 MIT.
+
+## v0.1.1
+
+- Fix Home Assistant device-registry association for all entities.
+- Fix sensor entity descriptions so temperature, humidity and air-quality sensors load correctly.
+- Add `strings.json` as the source translation catalogue.
+- Confirm command endpoints return HTTP 200 JSON with `success: true`; commands are followed by a fresh `/status` poll.
+
+
+## Changelog
+
+### 0.1.2
+
+- Waits for the controller to consolidate command changes before refreshing Home Assistant state.
+- Avoids temporary `unknown` / `off` values immediately after a control command.

@@ -2,14 +2,18 @@
 
 from datetime import timedelta
 
+from homeassistant.const import Platform
+
 DOMAIN = "frankische_profiair_140lite"
 
 DEFAULT_NAME = "FRÄNKISCHE profi-air 140 lite"
 DEFAULT_SCAN_INTERVAL = timedelta(seconds=30)
+COMMAND_CONFIRM_INTERVAL = 1.0
+COMMAND_CONFIRM_ATTEMPTS = 6
 API_PREFIX = "/api/v/1"
 SUPPORTED_DEVICE_TYPE = "002"
 
-PLATFORMS = ["sensor", "switch", "select"]
+PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SWITCH, Platform.SELECT]
 
 FUNCTION_AUTO = 1
 FUNCTION_NIGHT = 2

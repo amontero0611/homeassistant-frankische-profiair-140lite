@@ -28,9 +28,8 @@ async def async_setup_entry(
 class _ProfiAirSwitch(ProfiAirEntity, SwitchEntity):
     """Base class for command switches."""
 
-    async def _send(self, path: str) -> None:
-        await self.coordinator.client.async_post(path)
-        await self.coordinator.async_request_refresh()
+    async def _send(self, path: str, result_key: str, expected_value: int) -> None:
+        await self.coordinator.async_send_command(path, result_key, expected_value)
 
 
 class ProfiAirPowerSwitch(_ProfiAirSwitch):
@@ -48,11 +47,11 @@ class ProfiAirPowerSwitch(_ProfiAirSwitch):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Power on."""
-        await self._send("power/on")
+        await self._send("power/on", "ps", 1)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Power off."""
-        await self._send("power/off")
+        await self._send("power/off", "ps", 0)
 
 
 class ProfiAirCalendarSwitch(_ProfiAirSwitch):
@@ -70,8 +69,8 @@ class ProfiAirCalendarSwitch(_ProfiAirSwitch):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Enable calendar/program mode."""
-        await self._send("set/calendar/on")
+        await self._send("set/calendar/on", "cm", 1)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Disable calendar/program mode."""
-        await self._send("set/calendar/off")
+        await self._send("set/calendar/off", "cm", 0)

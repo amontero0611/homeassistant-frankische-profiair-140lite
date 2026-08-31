@@ -15,6 +15,11 @@ from .const import (
 )
 from .entity import ProfiAirEntity
 
+FUNCTION_OPTION_TO_VALUE = {value: key for key, value in FUNCTION_VALUE_TO_OPTION.items()}
+WORKING_MODE_OPTION_TO_VALUE = {
+    value: key for key, value in WORKING_MODE_VALUE_TO_OPTION.items()
+}
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -34,9 +39,8 @@ async def async_setup_entry(
 class _ProfiAirSelect(ProfiAirEntity, SelectEntity):
     """Base select entity."""
 
-    async def _send(self, path: str) -> None:
-        await self.coordinator.client.async_post(path)
-        await self.coordinator.async_request_refresh()
+    async def _send(self, path: str, result_key: str, expected_value: int) -> None:
+        await self.coordinator.async_send_command(path, result_key, expected_value)
 
 
 class ProfiAirFunctionSelect(_ProfiAirSelect):
@@ -55,7 +59,9 @@ class ProfiAirFunctionSelect(_ProfiAirSelect):
 
     async def async_select_option(self, option: str) -> None:
         """Select ventilation function."""
-        await self._send(FUNCTION_OPTION_TO_PATH[option])
+        await self._send(
+            FUNCTION_OPTION_TO_PATH[option], "fn", FUNCTION_OPTION_TO_VALUE[option]
+        )
 
 
 class ProfiAirSeasonSelect(_ProfiAirSelect):
@@ -74,4 +80,8 @@ class ProfiAirSeasonSelect(_ProfiAirSelect):
 
     async def async_select_option(self, option: str) -> None:
         """Select summer/winter mode."""
-        await self._send(WORKING_MODE_OPTION_TO_PATH[option])
+        await self._send(
+            WORKING_MODE_OPTION_TO_PATH[option],
+            "wm",
+            WORKING_MODE_OPTION_TO_VALUE[option],
+        )

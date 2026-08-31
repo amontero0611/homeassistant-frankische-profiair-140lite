@@ -1,14 +1,14 @@
 {
   "codeowners": [
-    "@YOUR_GITHUB_USERNAME"
+    "@amontero0611"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/YOUR_GITHUB_USERNAME/homeassistant-frankische-profiair-140lite",
+  "documentation": "https://github.com/amontero0611/homeassistant-frankische-profiair-140lite",
   "domain": "frankische_profiair_140lite",
   "integration_type": "device",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/YOUR_GITHUB_USERNAME/homeassistant-frankische-profiair-140lite/issues",
+  "issue_tracker": "https://github.com/amontero0611/homeassistant-frankische-profiair-140lite/issues",
   "name": "FRÄNKISCHE profi-air 140 lite",
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.1.2"
 }

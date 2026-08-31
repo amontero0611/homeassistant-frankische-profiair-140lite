@@ -6,7 +6,12 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+    SensorStateClass,
+)
 from homeassistant.const import PERCENTAGE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
@@ -16,15 +21,10 @@ from .entity import ProfiAirEntity
 
 
 @dataclass(frozen=True, kw_only=True)
-class ProfiAirSensorDescription:
-    """Description of a profi-air sensor."""
+class ProfiAirSensorEntityDescription(SensorEntityDescription):
+    """Describe a profi-air sensor."""
 
-    key: str
-    translation_key: str
     value_fn: Callable[[dict[str, Any]], Any]
-    device_class: SensorDeviceClass | None = None
-    native_unit_of_measurement: str | None = None
-    state_class: SensorStateClass | None = None
 
 
 def _scaled(result: dict[str, Any], key: str, divisor: float) -> float | None:
@@ -37,8 +37,8 @@ def _scaled(result: dict[str, Any], key: str, divisor: float) -> float | None:
         return None
 
 
-SENSORS = (
-    ProfiAirSensorDescription(
+SENSORS: tuple[ProfiAirSensorEntityDescription, ...] = (
+    ProfiAirSensorEntityDescription(
         key="temperature",
         translation_key="temperature",
         value_fn=lambda result: _scaled(result, "ta", 10),
@@ -46,7 +46,7 @@ SENSORS = (
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-    ProfiAirSensorDescription(
+    ProfiAirSensorEntityDescription(
         key="humidity",
         translation_key="humidity",
         value_fn=lambda result: _scaled(result, "humidity", 10),
@@ -54,7 +54,7 @@ SENSORS = (
         native_unit_of_measurement=PERCENTAGE,
         state_class=SensorStateClass.MEASUREMENT,
     ),
-    ProfiAirSensorDescription(
+    ProfiAirSensorEntityDescription(
         key="air_quality",
         translation_key="air_quality",
         value_fn=lambda result: result.get("airQuality"),
@@ -76,14 +76,16 @@ async def async_setup_entry(
 class ProfiAirSensor(ProfiAirEntity, SensorEntity):
     """Representation of a profi-air sensor."""
 
-    def __init__(self, coordinator, description: ProfiAirSensorDescription) -> None:
+    entity_description: ProfiAirSensorEntityDescription
+
+    def __init__(
+        self,
+        coordinator,
+        description: ProfiAirSensorEntityDescription,
+    ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator, description.key)
         self.entity_description = description
-        self._attr_translation_key = description.translation_key
-        self._attr_device_class = description.device_class
-        self._attr_native_unit_of_measurement = description.native_unit_of_measurement
-        self._attr_state_class = description.state_class
 
     @property
     def native_value(self) -> Any:

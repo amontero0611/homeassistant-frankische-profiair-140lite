@@ -22,6 +22,23 @@ class ProfiAirEntity(CoordinatorEntity[ProfiAirCoordinator]):
         self._key = key
         self._attr_unique_id = f"{self.device_uid}_{key}"
 
+        data = coordinator.data
+        setup = data.get("setup", {}) if isinstance(data.get("setup"), dict) else {}
+        sw = data.get("sw", {}) if isinstance(data.get("sw"), dict) else {}
+        device_type = data.get("deviceType", "unknown")
+
+        # Set this as an entity attribute rather than a dynamic property so the
+        # device registry can reliably associate every platform entity with the
+        # same physical ventilation unit.
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, self.device_uid)},
+            manufacturer="FRÄNKISCHE",
+            model=f"profi-air 140 lite (deviceType {device_type})",
+            name=setup.get("name") or DEFAULT_NAME,
+            serial_number=setup.get("serial"),
+            sw_version=sw.get("V"),
+        )
+
     @property
     def device_uid(self) -> str:
         """Return stable device UID."""
@@ -33,19 +50,3 @@ class ProfiAirEntity(CoordinatorEntity[ProfiAirCoordinator]):
         """Return the RESULT section of device status."""
         result = self.coordinator.data.get("RESULT", {})
         return result if isinstance(result, dict) else {}
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return Home Assistant device information."""
-        data = self.coordinator.data
-        setup = data.get("setup", {}) if isinstance(data.get("setup"), dict) else {}
-        sw = data.get("sw", {}) if isinstance(data.get("sw"), dict) else {}
-        device_type = data.get("deviceType", "unknown")
-        return DeviceInfo(
-            identifiers={(DOMAIN, self.device_uid)},
-            manufacturer="FRÄNKISCHE",
-            model=f"profi-air 140 lite (deviceType {device_type})",
-            name=setup.get("name") or DEFAULT_NAME,
-            serial_number=setup.get("serial"),
-            sw_version=sw.get("V"),
-        )
